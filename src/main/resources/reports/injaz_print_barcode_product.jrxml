@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="injaz_print_barcode_product" pageWidth="190" pageHeight="70" columnWidth="190" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f34f3364-e802-4f11-b032-48d04cc32285">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="nameAr" class="java.lang.String"/>
+	<field name="client" class="java.lang.String"/>
+	<field name="orderNo" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="1" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="65" splitType="Stretch">
+			<textField>
+				<reportElement x="2" y="2" width="186" height="20" uuid="49dd3fc1-d238-448e-88ab-0945983eca60"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arialinjaz" size="10" isBold="true" pdfEncoding="Cp1256"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{orderNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="23" width="93" height="20" uuid="43255dff-124d-45a1-b911-dfe8f1f109e2"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arialinjaz" size="6" isBold="true" pdfEncoding="Cp1256"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="95" y="23" width="93" height="20" uuid="40909909-470d-47cd-b289-579c306fd5c8"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arialinjaz" size="6" isBold="true" pdfEncoding="Cp1256"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nameAr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="43" width="186" height="20" uuid="0548988d-f94a-47c2-bf30-76171fc792d6"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arialinjaz" size="8" isBold="true" pdfEncoding="Cp1256"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{client}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service>
+    <id>injaz-printing-manager</id>
+    <name>injaz-printing-manager</name>
+    <description>Injaz Printing Manager Windows Service</description>
+    <executable>java</executable>
+    <arguments>-jar injaz-printing-manager.jar</arguments>
+    <logmode>rotate</logmode>
+</service>
