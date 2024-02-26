@@ -171,6 +171,15 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 
 	@Override
 	public void printOrderReceipt(InjazPrintOrderRestModel order) throws Exception {
+
+        /*System.out.println(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ order.getActualAmt());
+        System.out.println(env.getProperty("TAX_AMT_LABEL")+ " : "+ order.getTax());
+        if(!InjazAppConstants.isEmptyString(order.getCouponNo())) {
+            System.out.println(env.getProperty("COUPON_DISCOUNT") + " : " + order.getDiscountAmt());
+
+            System.out.println(env.getProperty("TOTAL_AFTER_DISCOUNT") + " : " +order.getTotal());
+        }*/
+
 		 PrintService printService = PrinterOutputStream.getPrintServiceByName(order.getPrinter());
 	     EscPos escpos;
 	     escpos = new EscPos(new PrinterOutputStream(printService));
@@ -223,7 +232,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
          //DELIVERY_PERSON
          if(!InjazAppConstants.isEmptyString(order.getDeliveryPerson()) && order.getDeliveryPerson().equals("null")) {
              imageWrapper.setJustification(EscPosConst.Justification.Center);
-        	 escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("DELIVERY_PERSON_LABEL")+""+order.getDeliveryPerson()), algorithm)); 
+        	 escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("DELIVERY_PERSON_LABEL")+" "+order.getDeliveryPerson()), algorithm));
          }
 
          if(order.getCustomerTaxNo() != null) {
@@ -283,16 +292,33 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
          }
 */
 
-         imageWrapper.setJustification(EscPosConst.Justification.Center);
-         escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ order.getTotal() ), algorithm));
 
      /*    imageWrapper.setJustification(EscPosConst.Justification.Right);
          escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getTotalWithoutTax()+ " : "+env.getProperty("TOTAL_WITHOUT_TAX_LABEL") ), algorithm));
-       */  
-         
-         imageWrapper.setJustification(EscPosConst.Justification.Center);
+       */
+
+
+        
+        
+        imageWrapper.setJustification(EscPosConst.Justification.Center);
+        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ order.getActualAmt() ), algorithm));
+
+        
+        imageWrapper.setJustification(EscPosConst.Justification.Center);
          escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TAX_AMT_LABEL")+ " : "+ order.getTax() ), algorithm));
-     /*    
+
+
+        if(!InjazAppConstants.isEmptyString(order.getCouponNo())) {
+            imageWrapper.setJustification(EscPosConst.Justification.Center);
+            escpos.write(imageWrapper, new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("DISCOUNT_AMT_LABEL") + " : " + order.getDiscountAmt()), algorithm));
+
+            imageWrapper.setJustification(EscPosConst.Justification.Center);
+            escpos.write(imageWrapper, new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("TOTAL_AFTER_DISCOUNT") + " : " + order.getTotal()), algorithm));
+
+
+        }
+         
+         /*    
          imageWrapper.setJustification(EscPosConst.Justification.Right);
          escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getExtraCharge()+ " : "+env.getProperty("EXTRA_CHARGE_LABEL") ), algorithm));
          
@@ -368,7 +394,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
       } 
       
 
-      double totalDuple= order.getTotal().doubleValue();
+      double totalDuple= order.getActualAmt().doubleValue();
       String total = Double.toString(totalDuple);
       String str4 = total;
       StringBuilder sb4 = new StringBuilder();
@@ -770,7 +796,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 */
 
          imageWrapper.setJustification(EscPosConst.Justification.Right);
-         escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(order.getTotal() + " : "+env.getProperty("TOTAL_AMT_LABEL") ), algorithm));
+         escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(order.getActualAmt() + " : "+env.getProperty("TOTAL_AMT_LABEL") ), algorithm));
 
      /*    imageWrapper.setJustification(EscPosConst.Justification.Right);
          escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getTotalWithoutTax()+ " : "+env.getProperty("TOTAL_WITHOUT_TAX_LABEL") ), algorithm));
