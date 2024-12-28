@@ -48,7 +48,12 @@ public class InjazPrintOrderRestModel implements Serializable{
 	 private String orderDate;
 	 
 	 private String orderId;
-	
+
+	private BigDecimal tobaccoFeeBeforeTax;
+
+	private BigDecimal tobaccoFeeAfterTax;;
+
+
 	public InjazPrintOrderRestModel(String header, String footer, String orderNo, String floorName, String tableName,
 			String printer, List<InjazPrintOrderLineRestModel> lines) {
 		super();
@@ -69,6 +74,22 @@ public class InjazPrintOrderRestModel implements Serializable{
 
 	public String getHeader() {
 		return header;
+	}
+
+	public BigDecimal getTobaccoFeeBeforeTax() {
+		return tobaccoFeeBeforeTax;
+	}
+
+	public void setTobaccoFeeBeforeTax(BigDecimal tobaccoFeeBeforeTax) {
+		this.tobaccoFeeBeforeTax = tobaccoFeeBeforeTax;
+	}
+
+	public BigDecimal getTobaccoFeeAfterTax() {
+		return tobaccoFeeAfterTax;
+	}
+
+	public void setTobaccoFeeAfterTax(BigDecimal tobaccoFeeAfterTax) {
+		this.tobaccoFeeAfterTax = tobaccoFeeAfterTax;
 	}
 
 	public void setHeader(String header) {

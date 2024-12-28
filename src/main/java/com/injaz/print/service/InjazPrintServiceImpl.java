@@ -172,6 +172,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 	@Override
 	public void printOrderReceipt(InjazPrintOrderRestModel order) throws Exception {
 
+        printOrderReceiptConsole(order);
         /*System.out.println(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ order.getActualAmt());
         System.out.println(env.getProperty("TAX_AMT_LABEL")+ " : "+ order.getTax());
         if(!InjazAppConstants.isEmptyString(order.getCouponNo())) {
@@ -264,7 +265,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
         		 escpos.writeLF(getRightLineWithoutBoldStyle(),String.valueOf(l.getUnitPrice().doubleValue())+"  x  "+String.valueOf(l.getQty().doubleValue()+"  =  "+String.valueOf(l.getUnitPrice().multiply(l.getQty()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())));
         		 imageWrapper.setJustification(EscPosConst.Justification.Left_Default);
                  escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(l.getNameAr()), algorithm));
-                 if(l.getItems()!=null && l.getItems().size() >0) {
+                 if(l.getItems()!=null && !l.getItems().isEmpty()) {
                 	 int ixd2=1;
                 	 for(InjazPrintOrderItemLineRestModel i :l.getItems()) {
                 	 
@@ -282,30 +283,30 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
                  ixd++;
         	 }
          }
-        /* 
-         if(order.getDiscountAmt()!=null && order.getDiscountAmt().compareTo(BigDecimal.ZERO) == 1 ) {
-        	 imageWrapper.setJustification(EscPosConst.Justification.Right);
-        	 escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getActualAmt() + " : "+env.getProperty("ACTUAL_AMT_LABEL") ), algorithm));
-
-        	 imageWrapper.setJustification(EscPosConst.Justification.Right);
-        	 escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getDiscountAmt() + " : "+env.getProperty("DISCOUNT_AMT_LABEL") ), algorithm));
-         }
-*/
 
 
-     /*    imageWrapper.setJustification(EscPosConst.Justification.Right);
-         escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getTotalWithoutTax()+ " : "+env.getProperty("TOTAL_WITHOUT_TAX_LABEL") ), algorithm));
-       */
+        // add tobacco fee fields
+        if(order.getTobaccoFeeBeforeTax()!=null){
+            imageWrapper.setJustification(EscPosConst.Justification.Center);
+            escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(
+                    env.getProperty("TOBACCO_FEE")+
+                    " : "+ order.getTobaccoFeeBeforeTax() ), algorithm));
+
+        }
 
 
-        
-        
+        imageWrapper.setJustification(EscPosConst.Justification.Center);
+        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_WITHOUT_TAX_LABEL")+ " : "+ order.getTotalWithoutTax() ), algorithm));
+
+
+        imageWrapper.setJustification(EscPosConst.Justification.Center);
+        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TAX_AMT_LABEL")+ " : "+ order.getTax() ), algorithm));
+
         imageWrapper.setJustification(EscPosConst.Justification.Center);
         escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ order.getActualAmt() ), algorithm));
 
         
-        imageWrapper.setJustification(EscPosConst.Justification.Center);
-         escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TAX_AMT_LABEL")+ " : "+ order.getTax() ), algorithm));
+
 
 
         if(!InjazAppConstants.isEmptyString(order.getCouponNo())) {
@@ -314,27 +315,9 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 
             imageWrapper.setJustification(EscPosConst.Justification.Center);
             escpos.write(imageWrapper, new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("TOTAL_AFTER_DISCOUNT") + " : " + order.getTotal()), algorithm));
-
-
         }
          
-         /*    
-         imageWrapper.setJustification(EscPosConst.Justification.Right);
-         escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getExtraCharge()+ " : "+env.getProperty("EXTRA_CHARGE_LABEL") ), algorithm));
-         
-         imageWrapper.setJustification(EscPosConst.Justification.Right);
-         escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getPaidAmt() + " : "+env.getProperty("TOTAL_PAID_AMT_LABEL") ), algorithm));
-         
-         imageWrapper.setJustification(EscPosConst.Justification.Right);
-         escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getCustomerPayAmount()+ " : "+env.getProperty("CUSTOMER_PAY_AMT_LABEL") ), algorithm));
-         
-         imageWrapper.setJustification(EscPosConst.Justification.Right);
-         escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getRemainingAmount()+ " : "+env.getProperty("REMAINING_AMT_LABEL") ), algorithm));
-      */   
-         
-         /*QR DATA M Taha
-          * ******************************************************************************************/
-        
+
 
       String name = new String(order.getHeader().getBytes("UTF-8"), "ISO-8859-1");
       String str = name;
@@ -1406,7 +1389,65 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 		reportService.generateBeanReport(reportName, new JRBeanCollectionDataSource(list), parameters,model.getPrinter());
 		
 	}
-	
-	
-	
+
+
+
+    public void printOrderReceiptConsole(InjazPrintOrderRestModel order) {
+
+
+        System.out.println(env.getProperty("ORDER_RECEIPT_TITLE"));
+        System.out.println(env.getProperty("ORDER_NO_LABEL")+" "+order.getOrderNo());
+
+        System.out.println(env.getProperty("TAX_NO_LABEL")+" : "+order.getTaxNo());
+
+        System.out.println(env.getProperty("DATE_TIME_LABEL")+" "+InjazUtility.getInstance().convertInstantIntoString(Instant.now(),
+                InjazAppConstants.DATE_FORMAT_RECEIPT_PRINT));
+
+        System.out.println("TOKEN_NO_LABEL" +""+order.getTokenNo()+"  --  "+env.getProperty("ORDER_TYPE_LABEL")+" "+order.getOrderType());
+
+        System.out.println("CUSTOMER_LABEL" +order.getCustomer()+"");
+
+
+
+
+        int ixd=1;
+        if(order.getLines()!=null) {
+            System.out.println(env.getProperty("DETAILS_LABEL"));
+
+            System.out.println(env.getProperty("TOTAL_AMT_LABEL")+"   "+env.getProperty("QTY_LABEL")+"   "+env.getProperty("TOTAL_WITHOUT_TAX_LABEL")+"            "+env.getProperty("PRODUCT_LABEL"));
+
+            System.out.println(env.getProperty("SEPARATOR"));
+
+            for(InjazPrintOrderLineRestModel l :order.getLines()) {
+
+                System.out.println(ixd+"."+l.getName());
+
+
+
+                System.out.println(env.getProperty("SEPARATOR"));
+                ixd++;
+            }
+        }
+
+
+        // add tobacco fee fields
+        if(order.getTobaccoFeeBeforeTax()!=null){
+            System.out.println(
+                    env.getProperty("TOBACCO_FEE")+
+                            " : "+ order.getTobaccoFeeBeforeTax() );
+
+        }
+
+
+        System.out.println(env.getProperty("TOTAL_WITHOUT_TAX_LABEL")+ " : "+ order.getTotalWithoutTax());
+
+
+        System.out.println(env.getProperty("TAX_AMT_LABEL")+ " : "+ order.getTax());
+
+        System.out.println(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ order.getActualAmt());
+
+
+    }
+
+
 }
