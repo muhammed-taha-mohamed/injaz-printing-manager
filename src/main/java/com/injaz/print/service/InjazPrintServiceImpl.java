@@ -132,7 +132,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
                  }
                 
                  
-                 if(l.getItems()!=null && l.getItems().size() >0) {
+                 if(l.getItems()!=null && !l.getItems().isEmpty()) {
                 	 int ixd2=1;
                 	 for(InjazPrintOrderItemLineRestModel i :l.getItems()) {
                 	 
@@ -1216,7 +1216,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
         Graphics2D g = img.createGraphics();
        g.setColor(Color.WHITE);
        g.fillRect(0, 0, 400, 60);
-       Font f = new Font("TimesRoman",Font.BOLD,25);         
+       Font f = new Font("TimesRoman",Font.BOLD,28);
        JLabel label = new JLabel(text);
        label.setFont(f);
        label.setBounds(200,1,400,60);
@@ -1287,7 +1287,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
        Graphics2D g = img.createGraphics();
       g.setColor(Color.WHITE);
       g.fillRect(0, 0, 400, 60);
-      Font f = new Font("TimesRoman",Font.BOLD,23);         
+      Font f = new Font("TimesRoman",Font.BOLD,28);
       JLabel label = new JLabel(text);
       label.setFont(f);
       label.setBounds(1,1,1600,60);
@@ -1321,7 +1321,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
       Graphics2D g = img.createGraphics();
      g.setColor(Color.WHITE);
      g.fillRect(0, 0, 500, 60);
-     Font f = new Font("TimesRoman",Font.BOLD,28);         
+     Font f = new Font("TimesRoman",Font.BOLD,32);
      JLabel label = new JLabel(text);
      label.setFont(f);
      label.setBounds(1,1,1600,60);
@@ -1339,7 +1339,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
        Graphics2D g = img.createGraphics();
       g.setColor(Color.WHITE);
       g.fillRect(0, 0, 500, 60);
-      Font f = new Font("TimesRoman",Font.BOLD,25);         
+      Font f = new Font("TimesRoman",Font.BOLD,26);
       JLabel label = new JLabel(text);
       label.setFont(f);
       label.setBounds(200,1,500,60);
