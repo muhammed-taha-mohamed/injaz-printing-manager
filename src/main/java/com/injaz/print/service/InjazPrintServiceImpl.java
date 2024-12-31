@@ -173,13 +173,6 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 	public void printOrderReceipt(InjazPrintOrderRestModel order) throws Exception {
 
         printOrderReceiptConsole(order);
-        /*System.out.println(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ order.getActualAmt());
-        System.out.println(env.getProperty("TAX_AMT_LABEL")+ " : "+ order.getTax());
-        if(!InjazAppConstants.isEmptyString(order.getCouponNo())) {
-            System.out.println(env.getProperty("COUPON_DISCOUNT") + " : " + order.getDiscountAmt());
-
-            System.out.println(env.getProperty("TOTAL_AFTER_DISCOUNT") + " : " +order.getTotal());
-        }*/
 
 		 PrintService printService = PrinterOutputStream.getPrintServiceByName(order.getPrinter());
 	     EscPos escpos;
@@ -297,6 +290,13 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 
         imageWrapper.setJustification(EscPosConst.Justification.Center);
         escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_WITHOUT_TAX_LABEL")+ " : "+ order.getTotalWithoutTax() ), algorithm));
+
+        if(order.getTobaccoFeeBeforeTax()!=null) {
+            imageWrapper.setJustification(EscPosConst.Justification.Center);
+            escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("INVOICE_TOTAL_WITHOUT_TAX_LABEL")+ " : "+
+                    order.getTotalWithoutTax().add(order.getTobaccoFeeBeforeTax() )), algorithm));
+
+        }
 
 
         imageWrapper.setJustification(EscPosConst.Justification.Center);
