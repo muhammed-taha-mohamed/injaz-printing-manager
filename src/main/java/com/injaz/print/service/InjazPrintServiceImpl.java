@@ -98,7 +98,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
                  }
                 
                  
-                 if(l.getItems()!=null && l.getItems().size() >0) {
+                 if(l.getItems()!=null && !l.getItems().isEmpty()) {
                 	 int ixd2=1;
                 	 for(InjazPrintOrderItemLineRestModel i :l.getItems()) {
                 	 
@@ -255,6 +255,13 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 
         imageWrapper.setJustification(EscPosConst.Justification.Center);
         escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_WITHOUT_TAX_LABEL")+ " : "+ order.getTotalWithoutTax() ), algorithm));
+
+        if(order.getTobaccoFeeBeforeTax()!=null) {
+            imageWrapper.setJustification(EscPosConst.Justification.Center);
+            escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("INVOICE_TOTAL_WITHOUT_TAX_LABEL")+ " : "+
+                    order.getTotalWithoutTax().add(order.getTobaccoFeeBeforeTax() )), algorithm));
+
+        }
 
 
         imageWrapper.setJustification(EscPosConst.Justification.Center);
@@ -1156,7 +1163,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
          Graphics2D g = img.createGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, 400, 200);
-        Font f = new Font("TimesRoman",Font.BOLD,30);         
+        Font f = new Font("TimesRoman",Font.BOLD,35);
         JLabel label = new JLabel(text);
         label.setFont(f);
         label.setBounds(1,1,400,200);
@@ -1174,7 +1181,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
         Graphics2D g = img.createGraphics();
        g.setColor(Color.WHITE);
        g.fillRect(0, 0, 400, 60);
-       Font f = new Font("TimesRoman",Font.BOLD,25);         
+       Font f = new Font("TimesRoman",Font.BOLD,35);
        JLabel label = new JLabel(text);
        label.setFont(f);
        label.setBounds(200,1,400,60);
@@ -1191,7 +1198,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
        Graphics2D g = img.createGraphics();
       g.setColor(Color.WHITE);
       g.fillRect(0, 0, 400, 60);
-      Font f = new Font("TimesRoman",Font.PLAIN,22);         
+      Font f = new Font("TimesRoman",Font.PLAIN,30);
       JLabel label = new JLabel(text);
       label.setFont(f);
       label.setBounds(200,1,400,60);
@@ -1209,7 +1216,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
        Graphics2D g = img.createGraphics();
       g.setColor(Color.WHITE);
       g.fillRect(0, 0, 400,60);
-      Font f = new Font("TimesRoman",Font.BOLD,25);         
+      Font f = new Font("TimesRoman",Font.BOLD,30);
       JLabel label = new JLabel("<html>"+text+"</html>");
       label.setFont(f);
       label.setBounds(0,0,400,60);
@@ -1227,7 +1234,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
        Graphics2D g = img.createGraphics();
       g.setColor(Color.WHITE);
       g.fillRect(0, 0, 800, 60);
-      Font f = new Font("TimesRoman",Font.BOLD,25);         
+      Font f = new Font("TimesRoman",Font.BOLD,30);
       JLabel label = new JLabel(text);
       label.setFont(f);
       label.setBounds(200,1,800,60);
@@ -1245,7 +1252,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
        Graphics2D g = img.createGraphics();
       g.setColor(Color.WHITE);
       g.fillRect(0, 0, 400, 60);
-      Font f = new Font("TimesRoman",Font.BOLD,23);         
+      Font f = new Font("TimesRoman",Font.BOLD,35);
       JLabel label = new JLabel(text);
       label.setFont(f);
       label.setBounds(1,1,1600,60);
@@ -1262,7 +1269,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
       Graphics2D g = img.createGraphics();
      g.setColor(Color.WHITE);
      g.fillRect(0, 0, 500, 60);
-     Font f = new Font("TimesRoman",Font.PLAIN,21);         
+     Font f = new Font("TimesRoman",Font.PLAIN,25);
      JLabel label = new JLabel(text);
      label.setFont(f);
      label.setBounds(1,1,1600,60);
@@ -1279,7 +1286,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
       Graphics2D g = img.createGraphics();
      g.setColor(Color.WHITE);
      g.fillRect(0, 0, 500, 60);
-     Font f = new Font("TimesRoman",Font.BOLD,28);         
+     Font f = new Font("TimesRoman",Font.BOLD,28);
      JLabel label = new JLabel(text);
      label.setFont(f);
      label.setBounds(1,1,1600,60);
@@ -1297,7 +1304,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
        Graphics2D g = img.createGraphics();
       g.setColor(Color.WHITE);
       g.fillRect(0, 0, 500, 60);
-      Font f = new Font("TimesRoman",Font.BOLD,25);         
+      Font f = new Font("TimesRoman",Font.BOLD,30);
       JLabel label = new JLabel(text);
       label.setFont(f);
       label.setBounds(200,1,500,60);
@@ -1347,65 +1354,5 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 		reportService.generateBeanReport(reportName, new JRBeanCollectionDataSource(list), parameters,model.getPrinter());
 		
 	}
-
-
-
-    public void printOrderReceiptConsole(InjazPrintOrderRestModel order) {
-
-
-        System.out.println(env.getProperty("ORDER_RECEIPT_TITLE"));
-        System.out.println(env.getProperty("ORDER_NO_LABEL")+" "+order.getOrderNo());
-
-        System.out.println(env.getProperty("TAX_NO_LABEL")+" : "+order.getTaxNo());
-
-        System.out.println(env.getProperty("DATE_TIME_LABEL")+" "+InjazUtility.getInstance().convertInstantIntoString(Instant.now(),
-                InjazAppConstants.DATE_FORMAT_RECEIPT_PRINT));
-
-        System.out.println("TOKEN_NO_LABEL" +""+order.getTokenNo()+"  --  "+env.getProperty("ORDER_TYPE_LABEL")+" "+order.getOrderType());
-
-        System.out.println("CUSTOMER_LABEL" +order.getCustomer()+"");
-
-
-
-
-        int ixd=1;
-        if(order.getLines()!=null) {
-            System.out.println(env.getProperty("DETAILS_LABEL"));
-
-            System.out.println(env.getProperty("TOTAL_AMT_LABEL")+"   "+env.getProperty("QTY_LABEL")+"   "+env.getProperty("TOTAL_WITHOUT_TAX_LABEL")+"            "+env.getProperty("PRODUCT_LABEL"));
-
-            System.out.println(env.getProperty("SEPARATOR"));
-
-            for(InjazPrintOrderLineRestModel l :order.getLines()) {
-
-                System.out.println(ixd+"."+l.getName());
-
-
-
-                System.out.println(env.getProperty("SEPARATOR"));
-                ixd++;
-            }
-        }
-
-
-        // add tobacco fee fields
-        if(order.getTobaccoFeeBeforeTax()!=null){
-            System.out.println(
-                    env.getProperty("TOBACCO_FEE")+
-                            " : "+ order.getTobaccoFeeBeforeTax() );
-
-        }
-
-
-        System.out.println(env.getProperty("TOTAL_WITHOUT_TAX_LABEL")+ " : "+ order.getTotalWithoutTax());
-
-
-        System.out.println(env.getProperty("TAX_AMT_LABEL")+ " : "+ order.getTax());
-
-        System.out.println(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ order.getActualAmt());
-
-
-    }
-
 
 }
