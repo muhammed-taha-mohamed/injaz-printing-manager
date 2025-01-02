@@ -51,18 +51,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
          Bitonal algorithm = new BitonalThreshold(127); 
          
          GraphicsImageWrapper imageWrapper = new GraphicsImageWrapper();
-         
-         // add logo
-         /*BufferedImage  logoBufferedImage = ImageIO.read(new FileInputStream(env.getProperty("LOGO_PATH")));
-         EscPosImage escposlogo = new EscPosImage(logoBufferedImage, algorithm); 
-         
-         imageWrapper.setJustification(EscPosConst.Justification.Center);
-         escpos.write(imageWrapper,escposlogo);*/
-         
-         
-         
-         /*imageWrapper.setJustification(EscPosConst.Justification.Center);
-         escpos.write(imageWrapper,new EscPosImage(getHeaderTextImage(order.getHeader()), algorithm));*/
+
          escpos.feed(2); 
          
          imageWrapper.setJustification(EscPosConst.Justification.Right);
@@ -70,47 +59,24 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
          
          imageWrapper.setJustification(EscPosConst.Justification.Center);
          escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("DATE_TIME_LABEL")+" "+InjazUtility.getInstance().convertInstantIntoString(Instant.now(),InjazAppConstants.DATE_FORMAT_RECEIPT_PRINT)), algorithm));
-         //escpos.writeLF(getHeaderStyle(),);
+
          imageWrapper.setJustification(EscPosConst.Justification.Right);
          escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("ORDER_NO_LABEL")+" "+order.getOrderNo()), algorithm)); 
         
-         //imageWrapper.setJustification(EscPosConst.Justification.Left_Default);
          escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("TOKEN_NO_LABEL")+" "+order.getTokenNo()+" "), algorithm));
 
 
-         
-        /* imageWrapper.setJustification(EscPosConst.Justification.Center);
-         escpos.write(imageWrapper,new EscPosImage(getHeaderTextImage(env.getProperty("KITCHEN_RECEIPT_TITLE")), algorithm));
-         //escpos.writeLF(getHeaderStyleWithBold(),env.getProperty("KITCHEN_RECEIPT_TITLE"));
-         escpos.feed(2); 
-         
-         escpos.writeLF(getHeaderStyle(),env.getProperty("DATE_TIME_LABEL")+" "+InjazUtility.getInstance().convertInstantIntoString(Instant.now(),InjazAppConstants.DATE_FORMAT_RECEIPT_PRINT));
-         escpos.feed(2);  
-         
-         
-         escpos.writeLF(getHeaderStyleWithBold(),env.getProperty("ORDER_NO_LABEL")+" "+order.getOrderNo());
-         escpos.feed(1); 
-         escpos.writeLF(getHeaderStyleWithBold(),env.getProperty("TOKEN_NO_LABEL")+" "+order.getTokenNo());
-        
-         escpos.feed(1); 
-         */
-         
          if(order.isCancel()) {
-        	 //escpos.writeLF(getHeaderStyleWithBold(),env.getProperty("CANCEL_ITEMS_LABEL"));  
-             escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("CANCEL_ITEMS_LABEL")), algorithm)); 
+             escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("CANCEL_ITEMS_LABEL")), algorithm));
          }
-         
-         if(order.getFloorName()!=null &&  !order.getFloorName().equalsIgnoreCase("false")) {
-        	   imageWrapper.setJustification(EscPosConst.Justification.Left_Default);
-               escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(" Floor : "+order.getFloorName()), algorithm));	 
-        	 
-         }
-         
-         if(order.getTableName()!=null &&  !order.getTableName().equalsIgnoreCase("false")) {
-      	   imageWrapper.setJustification(EscPosConst.Justification.Left_Default);
-             escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(" Table : "+order.getTableName()), algorithm));	 
-      	 
-       }
+
+        if(order.getFloorName()!=null &&  !order.getFloorName().equalsIgnoreCase("false")) {
+            imageWrapper.setJustification(EscPosConst.Justification.Center);
+            escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("TABLE_LABEL")+" : "+order.getTableName()+"  --  "+env.getProperty("FLOOR_LABEL")+" : "+order.getFloorName()), algorithm));
+
+        }
+
+
          escpos.feed(1);
          
          if(order.getLines()!=null) {
@@ -172,14 +138,6 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 	@Override
 	public void printOrderReceipt(InjazPrintOrderRestModel order) throws Exception {
 
-        printOrderReceiptConsole(order);
-        /*System.out.println(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ order.getActualAmt());
-        System.out.println(env.getProperty("TAX_AMT_LABEL")+ " : "+ order.getTax());
-        if(!InjazAppConstants.isEmptyString(order.getCouponNo())) {
-            System.out.println(env.getProperty("COUPON_DISCOUNT") + " : " + order.getDiscountAmt());
-
-            System.out.println(env.getProperty("TOTAL_AFTER_DISCOUNT") + " : " +order.getTotal());
-        }*/
 
 		 PrintService printService = PrinterOutputStream.getPrintServiceByName(order.getPrinter());
 	     EscPos escpos;
@@ -247,9 +205,9 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
          }
          
          if(order.getFloorName()!=null &&  !order.getFloorName().equalsIgnoreCase("false")) {
-        	 imageWrapper.setJustification(EscPosConst.Justification.Center); 
+        	 imageWrapper.setJustification(EscPosConst.Justification.Center);
         	 escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("TABLE_LABEL")+" : "+order.getTableName()+"  --  "+env.getProperty("FLOOR_LABEL")+" : "+order.getFloorName()), algorithm));
-        	 
+
          }
          
        
