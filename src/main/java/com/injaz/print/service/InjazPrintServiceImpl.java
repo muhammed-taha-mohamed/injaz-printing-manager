@@ -1267,7 +1267,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
        Graphics2D g = img.createGraphics();
       g.setColor(Color.WHITE);
       g.fillRect(0, 0, 400, 60);
-      Font f = new Font("TimesRoman",Font.BOLD,35);
+      Font f = new Font("TimesRoman",Font.BOLD,30);
       JLabel label = new JLabel(text);
       label.setFont(f);
       label.setBounds(1,1,1600,60);
