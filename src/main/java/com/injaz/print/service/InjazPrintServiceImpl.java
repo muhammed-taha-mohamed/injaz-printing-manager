@@ -45,7 +45,9 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 	
 	@Override
 	public void printKitchenReceipt(InjazPrintOrderRestModel order) throws Exception {
-		 PrintService printService = PrinterOutputStream.getPrintServiceByName(order.getPrinter());
+
+
+        PrintService printService = PrinterOutputStream.getPrintServiceByName(order.getPrinter());
 	     EscPos escpos;
 	     escpos = new EscPos(new PrinterOutputStream(printService));
          Bitonal algorithm = new BitonalThreshold(127); 
@@ -55,7 +57,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
          escpos.feed(2); 
          
          imageWrapper.setJustification(EscPosConst.Justification.Right);
-         escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("KITCHEN_RECEIPT_TITLE")), algorithm)); 
+         escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage("*" + env.getProperty("KITCHEN_RECEIPT_TITLE") + "*"), algorithm));
          
          imageWrapper.setJustification(EscPosConst.Justification.Center);
          escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("DATE_TIME_LABEL")+" "+InjazUtility.getInstance().convertInstantIntoString(Instant.now(),InjazAppConstants.DATE_FORMAT_RECEIPT_PRINT)), algorithm));
@@ -70,11 +72,9 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
              escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("CANCEL_ITEMS_LABEL")), algorithm));
          }
 
-        if(order.getFloorName()!=null &&  !order.getFloorName().equalsIgnoreCase("false")) {
             imageWrapper.setJustification(EscPosConst.Justification.Center);
-            escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("TABLE_LABEL")+" : "+order.getTableName()+"  --  "+env.getProperty("FLOOR_LABEL")+" : "+order.getFloorName()), algorithm));
+            escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("TABLE_LABEL")+" : "+order.getTableName()+"  --  "+env.getProperty("FLOOR_LABEL")+" : "+order.getFloorName()), algorithm));
 
-        }
 
 
          escpos.feed(1);
