@@ -29,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.List;
@@ -254,23 +255,37 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 
 
         imageWrapper.setJustification(EscPosConst.Justification.Center);
-        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_WITHOUT_TAX_LABEL")+ " : "+ order.getTotalWithoutTax() ), algorithm));
+        BigDecimal totalWithoutTax = order.getTotalWithoutTax().setScale(2, RoundingMode.HALF_UP);
+        escpos.write(imageWrapper, new EscPosImage(
+                getFooterWithBoldTextImage(env.getProperty("TOTAL_WITHOUT_TAX_LABEL") + " : " + totalWithoutTax),
+                algorithm
+        ));
 
         if(order.getTobaccoFeeBeforeTax()!=null) {
             imageWrapper.setJustification(EscPosConst.Justification.Center);
-            escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("INVOICE_TOTAL_WITHOUT_TAX_LABEL")+ " : "+
-                    order.getTotalWithoutTax().add(order.getTobaccoFeeBeforeTax() )), algorithm));
+            BigDecimal totalInvoiceWithoutTax = order.getTotalWithoutTax().add(order.getTobaccoFeeBeforeTax())
+                    .setScale(2, RoundingMode.HALF_UP);
 
+            escpos.write(imageWrapper, new EscPosImage(getFooterWithBoldTextImage(env.getProperty("INVOICE_TOTAL_WITHOUT_TAX_LABEL")+ " : " + totalInvoiceWithoutTax), algorithm));
         }
 
 
-        imageWrapper.setJustification(EscPosConst.Justification.Center);
-        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TAX_AMT_LABEL")+ " : "+ order.getTax() ), algorithm));
 
         imageWrapper.setJustification(EscPosConst.Justification.Center);
-        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ order.getActualAmt() ), algorithm));
 
-        
+        BigDecimal taxAmount = order.getTax().setScale(2, RoundingMode.HALF_UP);
+        escpos.write(imageWrapper, new EscPosImage(
+                getFooterWithBoldTextImage(env.getProperty("TAX_AMT_LABEL") + " : " + taxAmount),
+                algorithm
+        ));
+
+        imageWrapper.setJustification(EscPosConst.Justification.Center);
+
+        BigDecimal actualAmt = order.getActualAmt().setScale(2, RoundingMode.HALF_UP);
+        escpos.write(imageWrapper, new EscPosImage(
+                getFooterWithBoldTextImage(env.getProperty("TOTAL_AMT_LABEL") + " : " + actualAmt),
+                algorithm
+        ));
 
 
 
@@ -1181,7 +1196,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
         Graphics2D g = img.createGraphics();
        g.setColor(Color.WHITE);
        g.fillRect(0, 0, 400, 60);
-       Font f = new Font("TimesRoman",Font.BOLD,35);
+       Font f = new Font("TimesRoman",Font.BOLD,32);
        JLabel label = new JLabel(text);
        label.setFont(f);
        label.setBounds(200,1,400,60);
