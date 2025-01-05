@@ -69,22 +69,22 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
          escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("TOKEN_NO_LABEL")+" "+order.getTokenNo()+" "), algorithm));
 
 
-         if(order.isCancel()) {
-             escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("CANCEL_ITEMS_LABEL")), algorithm));
-         }
+        if (order.isCancel()) {
+            escpos.write(imageWrapper, new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("CANCEL_ITEMS_LABEL")), algorithm));
+        }
 
-            imageWrapper.setJustification(EscPosConst.Justification.Center);
-            escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("TABLE_LABEL")+" : "+order.getTableName()+"  --  "+env.getProperty("FLOOR_LABEL")+" : "+order.getFloorName()), algorithm));
+        imageWrapper.setJustification(EscPosConst.Justification.Center);
+        escpos.write(imageWrapper, new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("TABLE_LABEL") + " : " + order.getTableName()), algorithm));
+
+        imageWrapper.setJustification(EscPosConst.Justification.Center);
+        escpos.write(imageWrapper, new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("FLOOR_LABEL") + " : " + order.getFloorName()), algorithm));
 
 
+        escpos.feed(1);
 
-         escpos.feed(1);
-         
-         if(order.getLines()!=null) {
-        	 escpos.writeLF(getHeaderStyle(),env.getProperty("DETAILS_LABEL"));
-        	 //escpos.writeLF(getLeftLineStyle(),"Product                Qty          Notes");
+        if (order.getLines() != null) {
+            escpos.writeLF(getHeaderStyle(),env.getProperty("DETAILS_LABEL"));
         	 imageWrapper.setJustification(EscPosConst.Justification.Left_Default);
-             //escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("PRODUCT_LABEL")+"                "+env.getProperty("QTY_LABEL")+"          "+env.getProperty("NOTES_LABEL")), algorithm));	 
              escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("NOTES_LABEL")+"   "+env.getProperty("QTY_LABEL")+"   "+env.getProperty("PRODUCT_LABEL")), algorithm));
              escpos.writeLF(getHeaderStyle(),env.getProperty("SEPARATOR"));
         	   int ixd=1;
