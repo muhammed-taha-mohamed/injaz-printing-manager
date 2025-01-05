@@ -73,11 +73,13 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
             escpos.write(imageWrapper, new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("CANCEL_ITEMS_LABEL")), algorithm));
         }
 
-        imageWrapper.setJustification(EscPosConst.Justification.Center);
-        escpos.write(imageWrapper, new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("TABLE_LABEL") + " : " + order.getTableName()), algorithm));
+        if(order.getTableName()!=null && !order.getTableName().equals("false")){
+            imageWrapper.setJustification(EscPosConst.Justification.Center);
+            escpos.write(imageWrapper, new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("TABLE_LABEL") + " : " + order.getTableName()), algorithm));
 
-        imageWrapper.setJustification(EscPosConst.Justification.Center);
-        escpos.write(imageWrapper, new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("FLOOR_LABEL") + " : " + order.getFloorName()), algorithm));
+            imageWrapper.setJustification(EscPosConst.Justification.Center);
+            escpos.write(imageWrapper, new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("FLOOR_LABEL") + " : " + order.getFloorName()), algorithm));
+        }
 
 
         escpos.feed(1);
