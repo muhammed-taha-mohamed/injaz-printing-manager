@@ -93,7 +93,7 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
         if (order.getLines() != null) {
             escpos.writeLF(getHeaderStyle(),env.getProperty("DETAILS_LABEL"));
         	 imageWrapper.setJustification(EscPosConst.Justification.Left_Default);
-             escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("NOTES_LABEL")+"   "+env.getProperty("QTY_LABEL")+"   "+env.getProperty("PRODUCT_LABEL")), algorithm));
+             escpos.write(imageWrapper,new EscPosImage(getKitchenHeaderTextImage(env.getProperty("NOTES_LABEL")+"   "+env.getProperty("QTY_LABEL")+"   "+env.getProperty("PRODUCT_LABEL")), algorithm));
              escpos.writeLF(getHeaderStyle(),env.getProperty("SEPARATOR"));
         	   int ixd=1;
         	 for(InjazPrintOrderLineRestModel l :order.getLines()) {
@@ -101,9 +101,9 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
         		 escpos.writeLF(getLeftLineStyle(),ixd+"."+l.getName());
         		 escpos.writeLF(getHeaderStyleWithBold(),String.valueOf(l.getQty().doubleValue()));
         		 imageWrapper.setJustification(EscPosConst.Justification.Left_Default);
-                 escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(l.getNameAr()), algorithm));
+                 escpos.write(imageWrapper,new EscPosImage(getKitchenHeaderTextImage(l.getNameAr()), algorithm));
                  if(!InjazAppConstants.isEmptyString(l.getNotes()) && !l.getNotes().equals("null")) {
-                 escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldNotesTextImage(l.getNotes()), algorithm));
+                 escpos.write(imageWrapper,new EscPosImage(getKitchenHeaderTextImage(l.getNotes()), algorithm));
                  }
                 
                  
