@@ -58,27 +58,33 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
          escpos.feed(2); 
          
          imageWrapper.setJustification(EscPosConst.Justification.Right);
-         escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage("*" + env.getProperty("KITCHEN_RECEIPT_TITLE") + "*"), algorithm));
+         escpos.write(imageWrapper,new EscPosImage(getKitchenHeaderTextImage("*" + env.getProperty("KITCHEN_RECEIPT_TITLE") + "*"), algorithm));
          
          imageWrapper.setJustification(EscPosConst.Justification.Center);
-         escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(env.getProperty("DATE_TIME_LABEL")+" "+InjazUtility.getInstance().convertInstantIntoString(Instant.now(),InjazAppConstants.DATE_FORMAT_RECEIPT_PRINT)), algorithm));
+         escpos.write(imageWrapper,new EscPosImage(getKitchenHeaderTextImage(env.getProperty("DATE_TIME_LABEL")+" "+InjazUtility.getInstance().convertInstantIntoString(Instant.now(),InjazAppConstants.DATE_FORMAT_RECEIPT_PRINT)), algorithm));
 
          imageWrapper.setJustification(EscPosConst.Justification.Right);
-         escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("ORDER_NO_LABEL")+" "+order.getOrderNo()), algorithm)); 
+         escpos.write(imageWrapper,new EscPosImage(getKitchenHeaderTextImage(env.getProperty("ORDER_NO_LABEL")+" "+order.getOrderNo()), algorithm));
         
-         escpos.write(imageWrapper,new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("TOKEN_NO_LABEL")+" "+order.getTokenNo()+" "), algorithm));
+         escpos.write(imageWrapper,new EscPosImage(getKitchenHeaderTextImage(env.getProperty("TOKEN_NO_LABEL")+" "+order.getTokenNo()+" "), algorithm));
 
 
         if (order.isCancel()) {
-            escpos.write(imageWrapper, new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("CANCEL_ITEMS_LABEL")), algorithm));
+            escpos.write(imageWrapper, new EscPosImage(getKitchenHeaderTextImage(env.getProperty("CANCEL_ITEMS_LABEL")), algorithm));
         }
 
         if(order.getTableName()!=null && !order.getTableName().equals("false")){
             imageWrapper.setJustification(EscPosConst.Justification.Center);
-            escpos.write(imageWrapper, new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("TABLE_LABEL") + " : " + order.getTableName()), algorithm));
+            escpos.write(imageWrapper, new EscPosImage(getKitchenHeaderTextImage(env.getProperty("TABLE_LABEL") + " : " + order.getTableName()), algorithm));
 
             imageWrapper.setJustification(EscPosConst.Justification.Center);
-            escpos.write(imageWrapper, new EscPosImage(getHeaderWithoutBoldTextImage(env.getProperty("FLOOR_LABEL") + " : " + order.getFloorName()), algorithm));
+            escpos.write(imageWrapper, new EscPosImage(getKitchenHeaderTextImage(env.getProperty("FLOOR_LABEL") + " : " + order.getFloorName()), algorithm));
+
+            imageWrapper.setJustification(EscPosConst.Justification.Center);
+            escpos.write(imageWrapper, new EscPosImage(getKitchenHeaderTextImage(env.getProperty("TABLE_LABEL") + " : " + order.getTableName()), algorithm));
+
+            imageWrapper.setJustification(EscPosConst.Justification.Center);
+            escpos.write(imageWrapper, new EscPosImage(getKitchenHeaderTextImage(env.getProperty("FLOOR_LABEL") + " : " + order.getFloorName()), algorithm));
         }
 
 
@@ -1371,5 +1377,23 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 		reportService.generateBeanReport(reportName, new JRBeanCollectionDataSource(list), parameters,model.getPrinter());
 		
 	}
+
+    public BufferedImage getKitchenHeaderTextImage(String text) {
+
+        BufferedImage img = new BufferedImage(400, 60,
+                BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = img.createGraphics();
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, 400, 60);
+        Font f = new Font("TimesRoman",Font.BOLD,35);
+        JLabel label = new JLabel(text);
+        label.setFont(f);
+        label.setBounds(200,1,400,60);
+
+        label.paint(g);
+        g.dispose();
+        return img;
+
+    }
 
 }
