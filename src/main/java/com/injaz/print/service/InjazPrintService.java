@@ -10,6 +10,9 @@ public interface InjazPrintService {
 	
 	public void printKitchenReceipt(InjazPrintOrderRestModel order) throws Exception;
 	public void printOrderReceipt(InjazPrintOrderRestModel order) throws Exception;
+
+	void rePrintOrderReceipt(InjazPrintOrderRestModel order) throws Exception;
+
 	public void printRefundReceipt(InjazPrintOrderRestModel order) throws Exception;
 	public void printCheckPrint(InjazPrintOrderRestModel order) throws Exception;
 	public void printDuplicateOrderReceipt(InjazPrintOrderRestModel order) throws Exception;

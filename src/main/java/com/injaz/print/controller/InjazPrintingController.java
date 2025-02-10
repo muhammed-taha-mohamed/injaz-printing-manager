@@ -124,6 +124,22 @@ public class InjazPrintingController {
 			}
 	  return "success";
 	  }
+
+	@PostMapping("/duplicateOrderReceipt_2")
+	public String   printDuplicateOrderReceipt_2(@Valid @RequestBody String jsonOrder) {
+		try {
+			//logger.info("** begin orderReceipt ***");
+			ObjectMapper mapper = new ObjectMapper();
+			InjazPrintOrderRestModel order = mapper.readValue(jsonOrder, InjazPrintOrderRestModel.class);
+			injazPrintService.rePrintOrderReceipt(order);
+			// logger.info("** end orderReceipt ***");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return "Error";
+		}
+		return "success";
+	}
 	  
 	  @PostMapping("/printCashUpCloseReceipt")
 	  public String   printCashUpCloseReceipt(@Valid @RequestBody String jsonCashup) {
