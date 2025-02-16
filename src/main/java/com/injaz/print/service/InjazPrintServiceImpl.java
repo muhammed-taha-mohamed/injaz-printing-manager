@@ -1083,7 +1083,24 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 	}
 	
 	@Override
-	public void printDuplicateOrderReceipt(InjazPrintOrderRestModel order) throws Exception {
+    public void printDuplicateOrderReceipt(InjazPrintOrderRestModel order) throws Exception {
+
+        double orderTotalAmount =round(order.getTotal().doubleValue()) ;
+        double orderTotalAmountBeforeTax =round( orderTotalAmount / 1.15) ;;
+        double totalTax = round(orderTotalAmount - orderTotalAmountBeforeTax);
+        double tobaccoFee = round(orderTotalAmountBeforeTax / 2);
+        double totalLines = tobaccoFee;
+
+
+      /*  System.out.println("Order total amount: " + orderTotalAmount);
+        System.out.println("Order total amount before tax: " + orderTotalAmountBeforeTax);
+        System.out.println("Total tax: " + totalTax);
+        System.out.println("tobaccoFee: " + tobaccoFee);
+        System.out.println("totalLines: " + totalLines);*/
+
+
+
+
 		PrintService printService = PrinterOutputStream.getPrintServiceByName(order.getPrinter());
 	     EscPos escpos;
 	     escpos = new EscPos(new PrinterOutputStream(printService));
@@ -1197,31 +1214,31 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
         }
 */
 
-        imageWrapper.setJustification(EscPosConst.Justification.Center);
-        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ order.getTotal() ), algorithm));
 
-    /*    imageWrapper.setJustification(EscPosConst.Justification.Right);
-        escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getTotalWithoutTax()+ " : "+env.getProperty("TOTAL_WITHOUT_TAX_LABEL") ), algorithm));
-      */  
-        
+
         imageWrapper.setJustification(EscPosConst.Justification.Center);
-        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TAX_AMT_LABEL")+ " : "+ order.getTax() ), algorithm));
-    /*    
-        imageWrapper.setJustification(EscPosConst.Justification.Right);
-        escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getExtraCharge()+ " : "+env.getProperty("EXTRA_CHARGE_LABEL") ), algorithm));
-        
-        imageWrapper.setJustification(EscPosConst.Justification.Right);
-        escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getPaidAmt() + " : "+env.getProperty("TOTAL_PAID_AMT_LABEL") ), algorithm));
-        
-        imageWrapper.setJustification(EscPosConst.Justification.Right);
-        escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getCustomerPayAmount()+ " : "+env.getProperty("CUSTOMER_PAY_AMT_LABEL") ), algorithm));
-        
-        imageWrapper.setJustification(EscPosConst.Justification.Right);
-        escpos.write(imageWrapper,new EscPosImage(getFooterWithoutBoldTextImage(order.getRemainingAmount()+ " : "+env.getProperty("REMAINING_AMT_LABEL") ), algorithm));
-     */   
-        
-        /*QR DATA M Taha
-         * ******************************************************************************************/
+        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_PRICE")+ " : "+ totalLines ), algorithm));
+
+
+        imageWrapper.setJustification(EscPosConst.Justification.Center);
+        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOBACCO_FEE")+ " : "+ totalLines ), algorithm));
+
+
+        imageWrapper.setJustification(EscPosConst.Justification.Center);
+        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_WITHOUT_TAX_LABEL")+ " : "+ orderTotalAmountBeforeTax ), algorithm));
+
+        imageWrapper.setJustification(EscPosConst.Justification.Center);
+        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TAX_AMT_LABEL")+ " : "+ totalTax ), algorithm));
+
+
+        imageWrapper.setJustification(EscPosConst.Justification.Center);
+        escpos.write(imageWrapper,new EscPosImage(getFooterWithBoldTextImage(env.getProperty("TOTAL_AMT_LABEL")+ " : "+ orderTotalAmount ), algorithm));
+
+
+
+
+
+    /* ************************************ QR CODE ******************************************************/
         
         String name = new String(order.getHeader().getBytes("UTF-8"), "ISO-8859-1");
         String str = name;
@@ -1674,4 +1691,12 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
 
     }
 
+
+    public static double round (double value) {
+
+        long factor = (long) Math.pow(10, 2);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
 }
