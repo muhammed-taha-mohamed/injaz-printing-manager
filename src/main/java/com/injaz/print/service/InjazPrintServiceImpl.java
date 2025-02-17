@@ -1274,9 +1274,11 @@ public class InjazPrintServiceImpl implements InjazPrintService  {
         else{
           hexa_taxid_TLV = "02"+Integer.toHexString(taxno.length())+hexa_taxid;
         }
-       
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String date1 = sdf.format(order.getOrderDate());
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a", Locale.ENGLISH);
+        Date orderDate = inputFormat.parse(order.getOrderDate());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+        String date1 = outputFormat.format(orderDate);
         String date = new String(date1.toString().getBytes("UTF-8"), "ISO-8859-1");
         String str3 =date;
         StringBuilder sb3 = new StringBuilder();
